@@ -1,0 +1,1 @@
+Page={Age:function(e=0){document.currentScript.outerHTML+=new Date((new Date).getTime()-new Date(2001,2,29).getTime()).getFullYear()-1970-e},Extension:function(e){return 6==e?".gif":".png"},Profiles:13,Profile:function(){let e=1e4*Math.sin((new Date()).getDay());return Math.floor((e-Math.floor(e))*this.Profiles)}};
