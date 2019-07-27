@@ -36,7 +36,11 @@ Page = {
         let End = input.indexOf(" ");
         switch (input.slice(0, End > 0 ? End : input.length)) {
             case "help": case "h": { // Help Command
-                Page.WriteLine("\nRuntime Information:\nVersion: " + novm.Version + "\n\nMeta Commands:\n- .?help - Prints out help\n- .?clear - Clears both input and output\n- .?stack - Prints out the current stack\n- .?parse - Parses an instruction and prints it\n- .?reset - Clears the stack and resets the VM context\n");
+                let Help = "\nRuntime Opcodes:\n";
+                for(Opcode in novm.Parser.Instructions) {
+                    Help += "- " + novm.Parser.Instructions[Opcode].Name + ": " + Opcode + "\n";
+                } 
+                Page.WriteLine(Help + "\nRuntime Information:\nVersion: " + novm.Version + "\n\nMeta Commands:\n- .?help - Prints out help\n- .?clear - Clears both input and output\n- .?stack - Prints out the current stack\n- .?parse - Parses an instruction and prints it\n- .?reset - Clears the stack and resets the VM context\n");
                 break;
             }
 

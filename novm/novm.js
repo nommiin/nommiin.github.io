@@ -79,25 +79,47 @@ novm = {
     },
     // includes instruction parser
     Parser: {
+        /// @description A list of instructions, containing both runtime and meta data
+        Instructions: {
+            ">": {
+                Name: "Push",
+                Opcode: 0x00
+            },
+            "<": {
+                Name: "Duplicate",
+                Opcode: 0x01
+            },
+            "&": {
+                Name: "Invoke",
+                Opcode: 0x02
+            },
+            "+": {
+                Name: "Add",
+                Opcode: 0x03
+            },
+            "-": {
+                Name: "Subtract",
+                Opcode: 0x04
+            },
+            "*": {
+                Name: "Multiply",
+                Opcode: 0x05
+            },
+            "/": {
+                Name: "Divide",
+                Opcode: 0x06
+            }
+        },
         /// @description Parses instruction into opcode and operand (+other data)
         /// @argument instruction Takes a string and parses it into instruction object
         Parse: function(instruction) {
-            let Instruction = instruction.trim(), Opcode = -1, Operand = novm.Parser.Type(Instruction.slice(1));
-            switch (Instruction[0]) {
-                case ">": Opcode = 0x00; break; // Push
-                case "<": Opcode = 0x01; break; // Duplicate
-                case "&": Opcode = 0x02; break; // Invoke
-                case "|": Opcode = 0x03; break; // Define
-                case "+": Opcode = 0x04; break; // Add
-                case "-": Opcode = 0x05; break; // Subtract
-                case "/": Opcode = 0x06; break; // Divide
-                case "*": Opcode = 0x07; break; // Multiply
-                default: {
-                    // TODO: Error @ Bad/Unknown Instruction
-                    break;
-                }
+            let Instruction = instruction.trim(), Opcode = -1;
+            if (Instruction[0] in novm.Parser.Instructions) {
+                Opcode = novm.Parser.Instructions[Instruction[0]].Opcode;
+            } else {
+                // TODO: Error @ Unknown Opcode
             }
-            return {Opcode: Opcode, Operand: Operand};
+            return {Opcode: Opcode, Operand: novm.Parser.Type(Instruction.slice(1))};
         },
         /// @description Gets an operand and casts to the correct type
         /// @argument operand The operand to parse
