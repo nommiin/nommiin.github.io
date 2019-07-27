@@ -40,6 +40,10 @@ Page = {
                 for(Opcode in novm.Parser.Instructions) {
                     Help += "- " + novm.Parser.Instructions[Opcode].Name + ": " + Opcode + "\n";
                 } 
+                Help += "\nRuntime Functions:\n";
+                for(Interface in novm.Interface) {
+                    Help += "- " + Interface + "\n";
+                }
                 Page.WriteLine(Help + "\nRuntime Information:\nVersion: " + novm.Version + "\n\nMeta Commands:\n- .?help - Prints out help\n- .?clear - Clears both input and output\n- .?stack - Prints out the current stack\n- .?parse - Parses an instruction and prints it\n- .?reset - Clears the stack and resets the VM context\n");
                 break;
             }
