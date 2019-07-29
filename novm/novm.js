@@ -4,6 +4,7 @@ novm = {
     Version: 0.3,
     // includes runtime
     Core: {
+        Errors: [],
         /// @description Takes instructions and runs in a unique context
         /// @argument input List of parsed instructions
         Execute: function(input, Index=0, Layer=1, Stack=[], Variables={}, Block={}) {
@@ -38,12 +39,13 @@ novm = {
                         }
                         if (Instruction.Operand in Block.Functions) {
                             Found = true;
-                            let Return = novm.Core.Execute(Block.Functions[Instruction.Operand], undefined, Layer + 1, Stack, Variables, Block.Functions);
+                            let Return = novm.Core.Execute(Block.Functions[Instruction.Operand], undefined, Layer + 1, Stack, Variables, Block);
                             if (Return == undefined) {
                                 novm.Core.Error("Could not invoke function \"" + Instruction.Operand + "\", an error occured.", i);
                                 Running = false;
                             } else Stack = Return;
                         }
+
                         if (Found == false) {
                             novm.Core.Error("Could not invoke function \"" + Instruction.Operand + "\", function does not exist.", i);
                             Running = false;
@@ -190,6 +192,7 @@ novm = {
         },
         Error: function(message, Index=1) {
             console.log("[CORE, @" + Index.toString() + "]: " + message);
+            novm.Core.Errors.push(message);
         }
     },
     // includes instruction parser
@@ -286,10 +289,6 @@ novm = {
                     if (Parsed != undefined) {
                         switch (Parsed.Opcode) {
                             case -1: break;
-                            case 0xFE: { // Label
-                                Labels[Parsed.Operand] = InstructionIndex++;
-                                break;
-                            }
                             case 0xFF: { // Declare
                                 if (Content.length > 0) {
                                     FunctionList[FunctionName] = Content;
@@ -307,7 +306,18 @@ novm = {
                     }
                 });
             }
-            if (Content.length > 0) FunctionList[FunctionName] = Content;
+
+            if (Content.length > 0) {
+                for(var i = 0; i < Content.length; i++) {
+                    if (Content[i].Opcode == 0xFE) {
+                        Labels[Content[i].Operand] = i;
+                        Content.splice(i--, 1);
+                    }
+                }
+                FunctionList[FunctionName] = Content;
+            }
+            console.log(Content);
+            console.log(Labels);
             return {Functions: FunctionList, Labels: Labels};
         },
         /// @description Gets an operand and casts to the correct type
