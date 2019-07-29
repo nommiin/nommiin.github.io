@@ -1,7 +1,7 @@
 /// novm.js by Nommiin (2019)
 novm = {
     // the version
-    Version: 0.1,
+    Version: 0.2,
     // includes runtime
     Core: {
         /// @description Takes instructions and runs in a unique context

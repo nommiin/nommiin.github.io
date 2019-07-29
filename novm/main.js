@@ -61,13 +61,13 @@ Page = {
             }
 
             case "stack": case "s": {
-                Page.WriteLine("[META] Stack: [" + Page.Stack.join(", ") + "]");
+                Page.WriteLine("Stack: [" + Page.Stack.join(", ") + "]");
                 break;
             }
 
             case "parse": case "p": {
                 let Instruction = input.slice(5).trim();
-                Page.WriteLine("[META] Parsed: (" + Instruction + " -> " + JSON.stringify(novm.Parser.Parse(Instruction)) + ")");
+                Page.WriteLine("Parsed: (" + Instruction + " -> " + JSON.stringify(novm.Parser.Parse(Instruction)) + ")");
                 break;
             }
 
