@@ -81,7 +81,7 @@ novm = {
                             Running = false;
                         } else {
                             let b = Stack.pop(), a = Stack.pop();
-                            Stack.push(a - b);
+                            Stack.push(a * b);
                         }
                         break;
                     }
