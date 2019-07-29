@@ -1,7 +1,7 @@
 /// novm.js by Nommiin (2019)
 novm = {
     // the version
-    Version: 0.2,
+    Version: 0.3,
     // includes runtime
     Core: {
         /// @description Takes instructions and runs in a unique context
@@ -350,18 +350,18 @@ let game = `.novm hypothetical game setup - snake
 
 let loop = `
     |main
-        .values to compare
-        >0, >0
+        >0, =i
 
-        .if pass then jump to success label
-        ?!=, $success
-            .if fail then print out message and jump over success
-            >values are not equal, &__print__
-            $+2
-            
-            .print out equal message
-            !success
-            >values are equal, &__print__
+        !loop
+        >"i"=, @i, +
+        &__print__
+
+        >1, @i, +, =i
+        @i, >10, ?<, $loop
+
+        >loop finished
+        &__print__
+
 `;
 
 let test = `

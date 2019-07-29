@@ -46,13 +46,14 @@ Page = {
             case "help": case "h": { // Help Command
                 let Help = "\nRuntime Opcodes:\n";
                 for(Opcode in novm.Parser.Instructions) {
-                    Help += "- " + novm.Parser.Instructions[Opcode].Name + ": " + Opcode + "\n";
+                    Help += "   |  Name: " + novm.Parser.Instructions[Opcode].Name + ": " + Opcode + "\n";
+                    Help += "   \\_ Desc: " + novm.Parser.Instructions[Opcode].Desc + "\n";
                 } 
                 Help += "\nRuntime Functions:\n";
                 for(Interface in novm.Interface) {
-                    Help += "- " + Interface + "\n";
+                    Help += "   - " + Interface + "\n";
                 }
-                Page.WriteLine(Help + "\nRuntime Information:\nVersion: " + novm.Version + "\n\nMeta Commands:\n- .?help - Prints out help\n- .?clear - Clears both input and output\n- .?stack - Prints out the current stack\n- .?parse - Parses an instruction and prints it\n- .?reset - Clears the stack and resets the VM context\n");
+                Page.WriteLine(Help + "\nRuntime Information:\n   - Version: " + novm.Version + "\n\nMeta Commands:\n   - .?help - Prints out help\n   - .?clear - Clears both input and output\n   - .?stack - Prints out the current stack\n   - .?parse - Parses an instruction and prints it\n   - .?reset - Clears the stack and resets the VM context\n");
                 break;
             }
 
@@ -87,6 +88,14 @@ Page = {
         // override interface functions
         novm.Interface["__print__"] = function(s) {
             Page.WriteLine("[EXEC]: __print__ -> " + s.pop());
+        }
+
+        novm.Core.Error = function(message, index=-1) {
+            Page.WriteLine("[CORE, @" + index.toString() + "]: " + message, "red");
+        }
+
+        novm.Parser.Error = function(message, index=-1) {
+            Page.WriteLine("[PARSER]: " + message, "red");
         }
     }
 }
