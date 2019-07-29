@@ -4,7 +4,7 @@ Page = {
     Stack: [],
     Write: function(value, color="white") {
         if (Page.Output != undefined) {
-            Page.Output.innerHTML += "<font color=\"" + color + "\">" + value + "</font>";
+            Page.Output.innerHTML += "<span style='color: " + color + ";'>" + value + "</span>";
         }
     },
     WriteLine: function(value, color="white") {
@@ -13,6 +13,8 @@ Page = {
     Process: function(input) {
         if (input.keyCode != 13) return;
         let Instruction = Page.Input.value.trim();
+        Page.Write(Instruction, "gray");
+        let Offset = Page.Output.innerHTML.length;
         switch (Instruction[0]) {
             case ".": { // Comment/Command
                 if (Instruction[1] == "?") {
@@ -22,7 +24,6 @@ Page = {
             }
 
             default: { // Instruction
-                Page.WriteLine(Instruction, "gray");
                 let Instructions = [];
                 Instruction.split(",").forEach(_Instruction => {
                     Instructions.push(novm.Parser.Parse(_Instruction.trim()));
@@ -31,6 +32,12 @@ Page = {
             }
         }
         Page.Input.value = "";
+        if (Offset < Page.Output.innerHTML.length) {
+            console.log("do it");
+            Page.Output.innerHTML = Page.Output.innerHTML.slice(0, Offset) + " <span style='color: gray'>-></span> " + Page.Output.innerHTML.slice(Offset);
+        } else {
+            Page.Write("\n");
+        }
     },
     ProcessMeta: function(input) {
         let End = input.indexOf(" ");
