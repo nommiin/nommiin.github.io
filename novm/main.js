@@ -95,6 +95,7 @@ Page = {
         }
 
         novm.Parser.Error = function(message, index=-1) {
+            Page.Write(" -> ", "gray");
             Page.WriteLine("[PARSER]: " + message, "red");
         }
     }
