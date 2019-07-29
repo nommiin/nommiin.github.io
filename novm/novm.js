@@ -95,19 +95,19 @@ novm = {
             },
             "+": {
                 Name: "Add",
-                Opcode: 0x03
+                Opcode: 0x04
             },
             "-": {
                 Name: "Subtract",
-                Opcode: 0x04
-            },
-            "*": {
-                Name: "Multiply",
                 Opcode: 0x05
             },
             "/": {
                 Name: "Divide",
                 Opcode: 0x06
+            },
+            "*": {
+                Name: "Multiply",
+                Opcode: 0x07
             }
         },
         /// @description Parses instruction into opcode and operand (+other data)
