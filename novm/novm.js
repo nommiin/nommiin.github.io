@@ -181,6 +181,18 @@ novm = {
                         }
                         break;
                     }
+
+                    case 0x0B: { // Mod
+                        if (Stack.length < 2) {
+                            novm.Core.Error("Could not perform modulo operation, stack does not contain at least 2 values.", i);
+                            Running = false;
+                        } else {
+                            let b = Stack.pop(), a = Stack.pop();
+                            Stack.push(a % b);
+                        }
+                        break;
+                    }
+
                 }
 
                 if (Index++ > 32000) {
@@ -254,6 +266,11 @@ novm = {
                 Desc: "Moves the instruction pointer to a specific position/label, moves forward or backward if + or - signs are used",
                 Opcode: 0x0A
             },
+            "%": {
+                Name: "Mod",
+                Desc: "Pops top two values on stack and pushes the result of them being modulo'd....?",
+                Opcode: 0x0B
+            },
             "!": {
                 Name: "Label",
                 Desc: "Names the proceeding instruction position for use with the jump instruction",
@@ -283,7 +300,7 @@ novm = {
         /// @description Parses a block of instructions into a function list
         ParseBlock: function(instructions, FunctionList={}) {
             let InstructionBlock = instructions.split("\n"), InstructionIndex = 0, FunctionName = "main", Content = [], Labels = {};
-            for(let i = 0; i < InstructionBlock.length; i++) {
+            for(var i = 0; i < InstructionBlock.length; i++) {
                 InstructionBlock[i].split(",").forEach(Instruction => {
                     let Parsed = novm.Parser.Parse(Instruction, i);
                     if (Parsed != undefined) {
@@ -291,6 +308,12 @@ novm = {
                             case -1: break;
                             case 0xFF: { // Declare
                                 if (Content.length > 0) {
+                                    for(var i = 0; i < Content.length; i++) {
+                                        if (Content[i].Opcode == 0xFE) {
+                                            Labels[Content[i].Operand] = i;
+                                            Content.splice(i--, 1);
+                                        }
+                                    }
                                     FunctionList[FunctionName] = Content;
                                     Content = [];
                                 }
@@ -316,8 +339,6 @@ novm = {
                 }
                 FunctionList[FunctionName] = Content;
             }
-            console.log(Content);
-            console.log(Labels);
             return {Functions: FunctionList, Labels: Labels};
         },
         /// @description Gets an operand and casts to the correct type
@@ -340,56 +361,3 @@ novm = {
         }
     }
 }
-
-
-let game = `.novm hypothetical game setup - snake
-|main
-    &create
-
-|create
-    .room size
-    >16, <, =roomW, =roomH    
-
-    .player position
-    >8, <, =snakeX, =snakeY
-
-|update
-    >32, &__keydown__
-
-|render`;
-
-let loop = `
-    |main
-        >0, =i
-
-        !loop
-        >"i"=, @i, +
-        &__print__
-
-        >1, @i, +, =i
-        @i, >10, ?<, $loop
-
-        >loop finished
-        &__print__
-
-`;
-
-let test = `
-    |main
-    >1
-    >2, >3, >4
-    !labeltest
-    >5
-    +
-`;
-
-let program = novm.Parser.ParseBlock(loop);
-novm.Core.Execute(program.Functions["main"], undefined, undefined, undefined, undefined, program);
-
-
-/*
-novm.Core.Execute([
-    novm.Parser.Parse(">Hello World!"),
-    novm.Parser.Parse("&__print__")
-]);
-*/
