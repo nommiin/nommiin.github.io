@@ -2,6 +2,8 @@ Page = {
     Input: undefined,
     Output: undefined,
     Stack: [],
+    References: [],
+    Functions: {},
     Write: function(value, color="white") {
         if (Page.Output != undefined) {
             Page.Output.innerHTML += "<span style='color: " + color + ";'>" + value + "</span>";
@@ -28,12 +30,11 @@ Page = {
                 Instruction.split(",").forEach(_Instruction => {
                     Instructions.push(novm.Parser.Parse(_Instruction.trim()));
                 });
-                novm.Core.Execute(Instructions, Page.Stack);
+                novm.Core.Execute(Instructions, undefined, undefined, Page.Stack, Page.References, Page.Functions);
             }
         }
         Page.Input.value = "";
         if (Offset < Page.Output.innerHTML.length) {
-            console.log("do it");
             Page.Output.innerHTML = Page.Output.innerHTML.slice(0, Offset) + " <span style='color: gray'>-></span> " + Page.Output.innerHTML.slice(Offset);
         } else {
             Page.Write("\n");
